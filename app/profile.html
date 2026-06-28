@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Личный кабинет — AuraHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f7fafc;
+      color: #2d3748;
+      min-height: 100vh;
+    }
+    header {
+      border-bottom: 1px solid #e2e8f0;
+      background: white;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a202c;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #2b6cb0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 16px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #718096;
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: #1a202c; }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #2b6cb0;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .profile-info h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    .profile-info p {
+      font-size: 14px;
+      color: #718096;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(43,108,176,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a202c;
+    }
+    .card p {
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 12px;
+    }
+    .card .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2b6cb0;
+    }
+    .btn-logout {
+      padding: 8px 16px;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    .btn-logout:hover { background: #c53030; }
+    .hidden { display: none; }
+    .login-prompt {
+      text-align: center;
+      padding: 60px 16px;
+    }
+    .login-prompt h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .login-prompt a {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #2b6cb0;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">✦</div>
+        AuraHub
+      </a>
+      <button id="logoutBtn" class="btn-logout hidden" onclick="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <div class="container" id="profileContent">
+    <a href="index.html" class="back">← На главную</a>
+    
+    <div id="loggedIn">
+      <div class="profile-header">
+        <div class="avatar" id="avatar">И</div>
+        <div class="profile-info">
+          <h1 id="userName">Иван Иванов</h1>
+          <p id="userEmail">ivan@email.com</p>
+          <p id="userRole" style="font-size:13px;color:#2b6cb0;margin-top:4px">Исполнитель</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">💰</div>
+          <h3>Баланс</h3>
+          <div class="value" id="userBalance">0 ₽</div>
+          <p>Внутренний кошелёк</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>График выплат</h3>
+          <p id="userSchedule">Еженедельно</p>
+          <select id="payoutSchedule" onchange="updateSchedule()" style="margin-top:8px;padding:6px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+            <option value="daily">Ежедневно</option>
+            <option value="weekly">Еженедельно</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <h3>Мои задания</h3>
+          <p>Созданные и выполненные задания</p>
+          <a href="tasks.html" style="font-size:14px;color:#2b6cb0;text-decoration:none">Смотреть →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">✅</div>
+          <h3>Верификация</h3>
+          <p id="verificationStatus">Не верифицирован</p>
+          <button onclick="verifyUser()" style="margin-top:8px;padding:6px 12px;background:#2b6cb0;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer">Загрузить документы</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="notLoggedIn" class="login-prompt hidden">
+      <h2>Вы не авторизованы</h2>
+      <p style="margin-bottom:24px;color:#718096">Войдите или зарегистрируйтесь, чтобы увидеть личный кабинет</p>
+      <a href="login.html">Войти</a>
+      <a href="register.html" style="margin-left:12px;background:#718096">Регистрация</a>
+    </div>
+  </div>
+
+  <script>
+    function loadProfile() {
+      const session = JSON.parse(localStorage.getItem('aurahub_session'));
+      
+      if (!session) {
+        document.getElementById('loggedIn').classList.add('hidden');
+        document.getElementById('notLoggedIn').classList.remove('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('loggedIn').classList.remove('hidden');
+      document.getElementById('notLoggedIn').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+
+      document.getElementById('userName').textContent = session.name;
+      document.getElementById('userEmail').textContent = session.email;
+      document.getElementById('userBalance').textContent = session.balance + ' ₽';
+      document.getElementById('avatar').textContent = session.name.charAt(0).toUpperCase();
+      document.getElementById('userRole').textContent = session.role === 'client' ? 'Клиент' : 'Исполнитель';
+      document.getElementById('userSchedule').textContent = session.payoutSchedule === 'daily' ? 'Ежедневно' : 'Еженедельно';
+      document.getElementById('payoutSchedule').value = session.payoutSchedule;
+      document.getElementById('verificationStatus').textContent = session.verified ? 'Верифицирован ✅' : 'Не верифицирован';
+    }
+
+    function updateSchedule() {
+      const session = JSON.parse(localStorage.getItem('aurahub_session'));
+      const schedule = document.getElementById('payoutSchedule').value;
+      session.payoutSchedule = schedule;
+      localStorage.setItem('aurahub_session', JSON.stringify(session));
+      
+      const users = JSON.parse(localStorage.getItem('aurahub_users') || '[]');
+      const idx = users.findIndex(u => u.id === session.id);
+      if (idx !== -1) {
+        users[idx].payoutSchedule = schedule;
+        localStorage.setItem('aurahub_users', JSON.stringify(users));
+      }
+      
+      document.getElementById('userSchedule').textContent = schedule === 'daily' ? 'Ежедневно' : 'Еженедельно';
+    }
+
+    function verifyUser() {
+      const session = JSON.parse(localStorage.getItem('aurahub_session'));
+      session.verified = true;
+      localStorage.setItem('aurahub_session', JSON.stringify(session));
+      
+      const users = JSON.parse(localStorage.getItem('aurahub_users') || '[]');
+      const idx = users.findIndex(u => u.id === session.id);
+      if (idx !== -1) {
+        users[idx].verified = true;
+        localStorage.setItem('aurahub_users', JSON.stringify(users));
+      }
+      
+      document.getElementById('verificationStatus').textContent = 'Верифицирован ✅';
+    }
+
+    function logout() {
+      localStorage.removeItem('aurahub_session');
+      window.location.href = 'index.html';
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>
