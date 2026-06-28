@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вход — AuraHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      border-bottom: 1px solid #e2e8f0;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a202c;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #2b6cb0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 60px 16px;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #718096;
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: #1a202c; }
+    .title {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 8px;
+    }
+    .title p {
+      font-size: 14px;
+      color: #718096;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #2d3748;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: #2b6cb0;
+      box-shadow: 0 0 0 3px rgba(43,108,176,0.1);
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #1a4f8b; }
+    .error {
+      color: #e53e3e;
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+    .footer-text {
+      text-align: center;
+      font-size: 14px;
+      color: #718096;
+      margin-top: 24px;
+    }
+    .footer-text a {
+      color: #2b6cb0;
+      text-decoration: none;
+    }
+    .footer-text a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">✦</div>
+        AuraHub
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="index.html" class="back">← На главную</a>
+    
+    <div class="title">
+      <h1>Вход</h1>
+      <p>Войдите в свой аккаунт</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="your@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" id="password" placeholder="••••••••" required />
+      </div>
+      <div id="error" class="error"></div>
+      <button type="submit" class="btn">Войти</button>
+    </form>
+
+    <p class="footer-text">
+      Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error');
+
+      errorDiv.style.display = 'none';
+
+      const users = JSON.parse(localStorage.getItem('aurahub_users') || '[]');
+      const user = users.find(u => u.email === email && atob(u.password) === password);
+
+      if (!user) {
+        errorDiv.textContent = 'Неверный email или пароль';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      localStorage.setItem('aurahub_session', JSON.stringify(user));
+      window.location.href = 'profile.html';
+    });
+  </script>
+</body>
+</html>
